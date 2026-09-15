@@ -28,11 +28,17 @@ if _platform.system() == "Windows":
 # locale. `errors="replace"` is the belt and braces — a console that genuinely
 # cannot render a glyph shows a box instead of killing the process.
 import sys as _sys
+from core.logger import get_logger
+
+log = get_logger("main")
+
 for _stream in (_sys.stdout, _sys.stderr):
     try:
         _stream.reconfigure(encoding="utf-8", errors="replace")
-    except Exception:
+    except AttributeError:
         pass
+    except Exception as e:
+        log.error(f"Failed to reconfigure stream: {e}", exc_info=True)
 
 import asyncio
 import re
